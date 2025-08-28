@@ -6,16 +6,16 @@ export class EmailController {
   constructor(private readonly emailService: EmailService) {}
 
   @Post('send')
-  async sendEmail(@Body() body: { date: string }) {
-    const { date } = body;
+  async sendEmail(@Body() body: { date: string; restaurant: string }) {
+    const { date, restaurant } = body;
 
-    console.log("📩 Requisição recebida em /email/send");
-    console.log("👉 Dados recebidos do frontend:", body);
+    console.log('📩 Requisição recebida em /email/send');
+    console.log('👉 Dados recebidos do frontend:', body);
 
     const result = await this.emailService.sendMail(
-      "joaopedev@outlook.com",
-      "Ela aceitou o convite 🎉",
-      `Boa notícia! Tata aceitou o jantar para ${date}.`,
+      'joaopedev@outlook.com', // destinatário fixo
+      'Ela aceitou o convite 🎉',
+      `Boa notícia! Tata aceitou o jantar para ${date} no restaurante ${restaurant}.`,
       `
         <div style="font-family: Arial, sans-serif; text-align: center; background-color: #e0ffe0; padding: 20px; border-radius: 12px;">
           <h1 style="color: #28a745;">🎉 Confirmação 🎉</h1>
@@ -25,16 +25,23 @@ export class EmailController {
           <p style="font-size: 20px; font-weight: bold; color: #28a745;">
             Data escolhida: ${date}
           </p>
+          <p style="font-size: 20px; font-weight: bold; color: #28a745;">
+            Restaurante: ${restaurant}
+          </p>
           <p style="font-size: 16px; color: #555;">
             Prepare-se para uma noite especial 😍
           </p>
         </div>
-      `
+      `,
     );
 
-    console.log("✅ Email enviado com sucesso!");
-    console.log("📨 Detalhes do envio:", result);
+    console.log('✅ Email enviado com sucesso!');
+    console.log('📨 Detalhes do envio:', result);
 
-    return { message: "Email enviado com sucesso!", dateConfirmada: date };
+    return {
+      message: 'Email enviado com sucesso!',
+      dateConfirmada: date,
+      restaurantEscolhido: restaurant,
+    };
   }
 }
